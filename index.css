@@ -1,0 +1,260 @@
+/* Allgemeines Design */
+body {
+    margin: 0;
+    font-family: "Roboto", sans-serif;
+    background-color: white;
+    color: black;
+}
+
+/* Header Design */
+header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 150px;
+    background-color: #ffffff;
+    position: relative;
+}
+
+.menu-toggle {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    position: absolute;
+    left: 20px;
+    transition: transform 0.3s ease-in-out; /* Sanfte Animation */
+}
+
+.menu-toggle span {
+    background: black;
+    height: 2px;
+    width: 25px;
+    margin: 3px 0;
+    transition: all 0.3s ease-in-out; /* Sanfte Animation */
+}
+
+.header-center img {
+    max-height: 100px;
+}
+
+.header-icons {
+    display: flex;
+    gap: 15px;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.header-icons img {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+
+/* Navigation */
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 15px;
+    background-color: #f8f8f8;
+}
+
+nav a {
+    color: black;
+    text-decoration: none;
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight: 300;
+    position: relative;
+    font-family: "Roboto", sans-serif; /* Schriftart übernehmen */
+
+}
+
+nav a::after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 3px;
+    background: black;
+    transition: width 0.3s ease-in-out;
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+}
+
+nav a:hover::after {
+    width: 100%;
+}
+
+/* Overlay Menü */
+.overlay-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0;
+    background-color: white;
+    overflow-x: hidden;
+    transition: 0.3s;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.overlay-menu .close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 30px;
+    cursor: pointer;
+    color: black;
+}
+
+.overlay-menu a {
+    display: block;
+    margin: 20px;
+    font-size: 16px;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: black;
+    font-weight: 300;
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+}
+
+/* Produkt-Container */
+.product-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Dynamische Spalten */
+    gap: 10px; /* Weniger Abstand zwischen Produkten */
+    padding: 15px; /* Abstand vom Rand */
+    max-width: 95%; /* Über den gesamten Bildschirm mit Rand */
+    margin: auto;
+}
+
+.product {
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+}
+
+.product img {
+    width: 100%;
+    height: auto;
+    transition: opacity 0.1s ease-in-out;
+    max-height: 500px; /* Bildgröße maximiert */
+    object-fit: cover; /* Bilder proportional skalieren */
+}
+
+.product img:nth-child(2) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+}
+
+.product:hover img:nth-child(2) {
+    opacity: 1;
+}
+
+.product h3 {
+    font-size: 14px; /* Schriftgröße für den Titel */
+    font-weight: 400; /* Dünnere Schrift */
+    font-family: "Roboto", sans-serif; /* Schriftart übernehmen */
+    color: #333; /* Dunkler Grauton */
+    margin: 5px 0; /* Weniger Abstand */
+    text-transform: uppercase; /* Großbuchstaben */
+    letter-spacing: 1px; /* Leichtes Letter-Spacing */
+}
+
+.product p {
+    font-size: 12px; /* Schriftgröße für den Preis */
+    font-weight: 300; /* Sehr dünne Schrift */
+    font-family: "Roboto", sans-serif; /* Schriftart übernehmen */
+    color: #777; /* Hellgraue Schriftfarbe */
+    margin: 5px 0; /* Weniger Abstand */
+}
+
+
+/* Responsives Design */
+@media (max-width: 768px) {
+    header {
+        height: 120px;
+    }
+
+    .menu-toggle {
+        display: flex;
+        transform: scale(0.8); /* Hamburger-Menü kleiner */
+    }
+
+    .menu-toggle span {
+        width: 20px; /* Kleinere Breite für Hamburger-Linien */
+        height: 1.5px; /* Dünnere Linien */
+    }
+
+    nav {
+        display: none;
+    }
+
+    .header-center img {
+        max-height: 80px;
+    }
+
+    .header-icons {
+        display: flex;
+        gap: 10px;
+        right: 10px;
+    }
+
+    .product-container {
+        grid-template-columns: repeat(2, 1fr); /* Zwei Spalten auf Handy */
+        gap: 5px; /* Sehr enger Abstand */
+        padding: 10px;
+    }
+    .product h3 {
+        font-size: 0.8rem; /* Kleinere Schrift für mobile Geräte */
+    }
+
+    .product p {
+        font-size: 0.6rem; /* Kleinere Schrift für Preise auf mobilen Geräten */
+    }
+}
+
+@media (max-width: 480px) {
+    .product h3 {
+        font-size: 0.6rem; /* Noch kleinere Schrift für sehr kleine Geräte */
+    }
+
+    .product p {
+        font-size: 0.4rem; /* Noch kleinere Schrift für Preise */
+    }
+    .menu-toggle {
+        transform: scale(0.7); /* Noch kleineres Hamburger-Menü */
+    }
+
+    .menu-toggle span {
+        width: 18px; /* Noch kleinere Breite für Hamburger-Linien */
+        height: 1px; /* Dünnste Linien */
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    .product-container {
+        grid-template-columns: repeat(3, 1fr); /* Drei Spalten bei mittlerem Bildschirm */
+        gap: 10px; /* Weniger Abstand zwischen Produkten */
+        padding: 15px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .product-container {
+        grid-template-columns: repeat(4, 1fr); /* Maximal vier Spalten bei großem Bildschirm */
+        gap: 15px; /* Kleiner Abstand zwischen Produkten */
+        padding: 20px; /* Etwas Abstand vom Rand */
+    }
+
+    .product img {
+        max-height: 600px; /* Größere Bilder auf großen Bildschirmen */
+    }
+}

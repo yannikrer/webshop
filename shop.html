@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produktdetails</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f8f8f8;
+            color: #333;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        header nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        header nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            display: flex;
+            gap: 50px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .product-image img {
+            max-width: 100%;
+            border-radius: 10px;
+        }
+
+        .product-details {
+            flex: 1;
+        }
+
+        .product-details h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .product-details p {
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .product-options {
+            margin-bottom: 20px;
+        }
+
+        .product-options label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .colors, .sizes {
+            display: flex;
+            gap: 10px;
+        }
+
+        .color-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #ddd;
+        }
+
+        .sizes span {
+            display: inline-block;
+            padding: 5px 15px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .sizes span:hover, .color-circle:hover {
+            border-color: #333;
+        }
+
+        .add-to-cart {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .add-to-cart:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div>
+            <h2>ShopLogo</h2>
+        </div>
+        <nav>
+            <a href="#">Men</a>
+            <a href="#">Women</a>
+            <a href="#">Kids</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="product-image">
+            <img src="tshirt.jpg" alt="T-Shirt">
+        </div>
+        <div class="product-details">
+            <h1>T-Shirt Name</h1>
+            <p>
+                Das Classic Comfort T-Shirt aus weicher Baumwolle bietet einen bequemen, lockeren Schnitt und einen Rundhalsausschnitt. Perfekt für lässige Outfits und den ganzen Tag über angenehm zu tragen.
+            </p>
+            <div class="product-options">
+                <label for="colors">Farbe:</label>
+                <div class="colors">
+                    <div class="color-circle" style="background-color: black;"></div>
+                    <div class="color-circle" style="background-color: red;"></div>
+                    <div class="color-circle" style="background-color: green;"></div>
+                    <div class="color-circle" style="background-color: lightgray;"></div>
+                </div>
+            </div>
+
+            <div class="product-options">
+                <label for="sizes">Größe:</label>
+                <div class="sizes">
+                    <span>XS</span>
+                    <span>S</span>
+                    <span>M</span>
+                    <span>L</span>
+                    <span>XL</span>
+                </div>
+            </div>
+
+            <button class="add-to-cart">In den Warenkorb</button>
+        </div>
+    </div>
+</body>
+</html>
