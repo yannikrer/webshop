@@ -1,4 +1,4 @@
-/* Allgemeines Design */
+/* Allgemeines Styling */
 body {
     margin: 0;
     font-family: "Roboto", sans-serif;
@@ -6,8 +6,9 @@ body {
     color: black;
 }
 
-/* Header Design */
+/* Header Styling */
 header {
+    position: fixed;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -22,7 +23,7 @@ header {
     cursor: pointer;
     position: absolute;
     left: 20px;
-    transition: transform 0.3s ease-in-out; /* Sanfte Animation */
+    transition: transform 0.3s ease-in-out;
 }
 
 .menu-toggle span {
@@ -30,7 +31,6 @@ header {
     height: 2px;
     width: 25px;
     margin: 3px 0;
-    transition: all 0.3s ease-in-out; /* Sanfte Animation */
 }
 
 .header-center img {
@@ -88,7 +88,7 @@ nav a:hover::after {
     width: 100%;
 }
 
-/* Overlay Menü */
+/* Overlay-Menü Styling */
 .overlay-menu {
     position: fixed;
     top: 0;
@@ -102,6 +102,15 @@ nav a:hover::after {
     z-index: 1000;
 }
 
+.overlay-menu a {
+    display: block;
+    padding: 15px;
+    font-size: 16px;
+    text-decoration: none;
+    color: black;
+    border-bottom: 1px solid #ddd;
+}
+
 .overlay-menu .close-btn {
     position: absolute;
     top: 20px;
@@ -110,6 +119,7 @@ nav a:hover::after {
     cursor: pointer;
     color: black;
 }
+
 
 .overlay-menu a {
     display: block;
@@ -126,11 +136,13 @@ nav a:hover::after {
 /* Produkt-Container */
 .product-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Dynamische Spalten */
-    gap: 10px; /* Weniger Abstand zwischen Produkten */
-    padding: 15px; /* Abstand vom Rand */
-    max-width: 95%; /* Über den gesamten Bildschirm mit Rand */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 10px; /* Beibehaltung des Abstands zwischen den Produkten */
+    padding: 10px; /* Reduzierter Abstand zum Rand */
+    max-width: 95%; /* Erhöhte maximale Breite für weniger Randabstand */
     margin: auto;
+    align-items: stretch; /* Stellt sicher, dass alle Kinder (Produkte) die Höhe des größten Kindes annehmen */
+    height: auto; /* Ermöglicht den Containern, sich der Höhe des größten Bildes anzupassen */
 }
 
 .product {
@@ -143,8 +155,8 @@ nav a:hover::after {
     width: 100%;
     height: auto;
     transition: opacity 0.1s ease-in-out;
-    max-height: 500px; /* Bildgröße maximiert */
-    object-fit: cover; /* Bilder proportional skalieren */
+    max-height: 500px;
+    object-fit: cover;
 }
 
 .product img:nth-child(2) {
@@ -159,23 +171,262 @@ nav a:hover::after {
 }
 
 .product h3 {
-    font-size: 14px; /* Schriftgröße für den Titel */
-    font-weight: 400; /* Dünnere Schrift */
-    font-family: "Roboto", sans-serif; /* Schriftart übernehmen */
-    color: #333; /* Dunkler Grauton */
-    margin: 5px 0; /* Weniger Abstand */
-    text-transform: uppercase; /* Großbuchstaben */
-    letter-spacing: 1px; /* Leichtes Letter-Spacing */
+    font-size: 14px;
+    font-weight: 400;
+    font-family: "Roboto", sans-serif;
+    color: #333;
+    margin: 5px 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .product p {
-    font-size: 12px; /* Schriftgröße für den Preis */
-    font-weight: 300; /* Sehr dünne Schrift */
-    font-family: "Roboto", sans-serif; /* Schriftart übernehmen */
-    color: #777; /* Hellgraue Schriftfarbe */
-    margin: 5px 0; /* Weniger Abstand */
+    font-size: 12px;
+    font-weight: 300;
+    font-family: "Roboto", sans-serif;
+    color: #777;
+    margin: 5px 0;
+}
+/* Suchleiste Styling */
+.search-bar {
+    position: fixed;
+    display: none;
+    width: 100%;
+    position: absolute;
+    top: 150px;
+    left: 0;
+    background-color: white;
+    z-index: 1000;
 }
 
+.search-bar-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 50px;
+}
+
+.search-bar-content img {
+    width: 20px;
+    height: 20px;
+}
+
+.search-bar-content input {
+    flex: 1;
+    margin: 0 10px;
+    padding: 10px;
+    border: none; /* Kein Rand mehr */
+    font-size: 16px;
+    outline: none;
+}
+
+.search-bar-content .close-btn {
+    font-size: 20px;
+    cursor: pointer;
+    color: black;
+}
+
+/* Aktive Suchleiste */
+.search-bar.active {
+    display: block;
+}
+
+/* 📌 Produkt-Detailseite Styling */
+.product-detail {
+    display: flex;
+    max-width: 1000px;
+    margin: 50px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Produktbild */
+.product-image {
+    flex: 1;
+    text-align: center;
+}
+
+.product-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.product-image img:hover {
+    opacity: 0.8;
+}
+
+/* Produkt-Info */
+.product-info {
+    flex: 1;
+    padding: 20px;
+}
+
+.product-info h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.product-info p {
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+/* Größe-Auswahl */
+.size-options {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.size-options button {
+    padding: 10px 15px;
+    font-size: 14px;
+    border: 1px solid black;
+    background: white;
+    cursor: pointer;
+}
+
+.size-options button:hover,
+.size-options button.selected {
+    background: black;
+    color: white;
+}
+
+/* Warenkorb-Button */
+.add-to-cart {
+    background: black;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.add-to-cart:hover {
+    background: #333;
+}
+
+/* Anzahl-Auswahl */
+.quantity-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.quantity-container button {
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+    border: 1px solid black;
+    background: white;
+    cursor: pointer;
+}
+
+.quantity-container button:hover {
+    background: black;
+    color: white;
+}
+
+#product-quantity {
+    width: 50px;
+    text-align: center;
+    font-size: 16px;
+    border: 1px solid black;
+    padding: 5px;
+}
+/* Warenkorb Styling */
+#cart-items {
+    max-width: 800px;
+    margin: 50px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.cart-item img {
+    width: 80px;
+    height: auto;
+    border-radius: 5px;
+}
+
+.cart-item div {
+    flex: 1;
+    margin-left: 20px;
+}
+
+.cart-item p {
+    margin: 5px 0;
+}
+
+.cart-item button {
+    background: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.cart-item button:hover {
+    background: darkred;
+}
+
+#clear-cart, #checkout {
+    display: block;
+    width: 200px;
+    margin: 20px auto;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+#clear-cart {
+    background: red;
+    color: white;
+}
+
+#checkout {
+    background: black;
+    color: white;
+}
+
+#clear-cart:hover {
+    background: darkred;
+}
+
+#checkout:hover {
+    background: gray;
+}
+
+
+/* 📌 Mobile Optimierung */
+@media (max-width: 768px) {
+    .product-detail {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .size-options {
+        justify-content: center;
+    }
+}
 
 /* Responsives Design */
 @media (max-width: 768px) {
@@ -221,23 +472,108 @@ nav a:hover::after {
     }
 }
 
-@media (max-width: 480px) {
-    .product h3 {
-        font-size: 0.6rem; /* Noch kleinere Schrift für sehr kleine Geräte */
+/* Tablets und kleinere Bildschirme */
+@media (max-width: 1024px) {
+    header {
+        height: 120px;
     }
 
-    .product p {
-        font-size: 0.4rem; /* Noch kleinere Schrift für Preise */
-    }
     .menu-toggle {
-        transform: scale(0.7); /* Noch kleineres Hamburger-Menü */
+        display: flex;
+        transform: scale(0.9);
     }
 
     .menu-toggle span {
-        width: 18px; /* Noch kleinere Breite für Hamburger-Linien */
-        height: 1px; /* Dünnste Linien */
+        width: 22px;
+    }
+
+    .header-center img {
+        max-height: 80px;
+    }
+
+    .header-icons img {
+        width: 25px;
+        height: 25px;
+    }
+
+    .search-bar {
+        top: 120px; /* Direkt unter dem kleineren Header */
+    }
+
+    .search-bar-content {
+        padding: 10px 30px;
+    }
+
+    .search-bar-content input {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .product-container {
+        grid-template-columns: repeat(2, 1fr); /* Zwei Spalten */
+        gap: 10px;
     }
 }
+
+/* Smartphones */
+@media (max-width: 768px) {
+    header {
+        height: 100px;
+    }
+
+    .menu-toggle {
+        transform: scale(0.8);
+    }
+
+    .menu-toggle span {
+        width: 20px;
+    }
+
+    .header-center img {
+        max-height: 70px;
+    }
+
+    .header-icons img {
+        width: 20px;
+        height: 20px;
+    }
+
+    .search-bar {
+        top: 100px; /* Direkt unter dem kleineren Header */
+    }
+
+    .search-bar-content {
+        padding: 10px 20px;
+    }
+
+    .search-bar-content input {
+        font-size: 12px;
+        padding: 6px;
+    }
+
+    .product-container {
+        grid-template-columns: repeat(2, 1fr); /* Zwei Spalten auf kleinen Bildschirmen */
+        gap: 5px; /* Sehr enger Abstand */
+    }
+}
+
+/* Große Bildschirme */
+@media (min-width: 1280px) {
+    .product-container {
+        grid-template-columns: repeat(4, 1fr); /* Vier Spalten */
+        gap: 20px;
+    }
+
+    .search-bar-content {
+        padding: 10px 70px;
+    }
+
+    .search-bar-content input {
+        font-size: 18px;
+        padding: 12px;
+    }
+}
+
 
 @media (min-width: 768px) and (max-width: 1024px) {
     .product-container {
@@ -255,6 +591,164 @@ nav a:hover::after {
     }
 
     .product img {
-        max-height: 600px; /* Größere Bilder auf großen Bildschirmen */
+        max-height: 600px; /* Größere Bilder auf großen Bildschirmen */ 
+    }
+}
+
+@media (min-width: 1280px) {
+    .product-container {
+        grid-template-columns: repeat(4, 1fr); /* Vier Spalten */
+        gap: 20px;
+    }
+
+    .search-bar-content {
+        padding: 10px 70px;
+    }
+
+    .search-bar-content input {
+        font-size: 18px;
+        padding: 12px;
+    }
+}
+
+@media (min-width: 600px) {
+    .product-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 900px) {
+    .product-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1200px) {
+    .product-container {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* 📌 Responsive Design für die Produkt-Detailseite */
+@media (max-width: 1024px) {
+    .product-detail {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 20px;
+        max-width: 95%;
+    }
+
+    .product-image {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .product-info {
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+    }
+
+    .size-options {
+        justify-content: center;
+    }
+
+    .quantity-container {
+        justify-content: center;
+    }
+
+    .add-to-cart {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .product-detail {
+        flex-direction: column;
+        padding: 15px;
+    }
+
+    .product-image {
+        max-width: 100%;
+    }
+
+    .product-info h2 {
+        font-size: 20px;
+    }
+
+    .product-info p {
+        font-size: 14px;
+    }
+
+    .size-options {
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .size-options button {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
+    .quantity-container {
+        gap: 5px;
+    }
+
+    .quantity-container button {
+        width: 25px;
+        height: 25px;
+        font-size: 14px;
+    }
+
+    #product-quantity {
+        width: 40px;
+        font-size: 14px;
+    }
+
+    .add-to-cart {
+        font-size: 14px;
+        padding: 8px 16px;
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .product-detail {
+        padding: 10px;
+    }
+
+    .product-info h2 {
+        font-size: 18px;
+    }
+
+    .product-info p {
+        font-size: 12px;
+    }
+
+    .size-options button {
+        padding: 5px 8px;
+        font-size: 10px;
+    }
+
+    .quantity-container {
+        gap: 3px;
+    }
+
+    .quantity-container button {
+        width: 20px;
+        height: 20px;
+        font-size: 12px;
+    }
+
+    #product-quantity {
+        width: 35px;
+        font-size: 12px;
+    }
+
+    .add-to-cart {
+        font-size: 12px;
+        padding: 6px 12px;
+        width: 100%;
     }
 }
