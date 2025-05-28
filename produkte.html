@@ -187,7 +187,7 @@
         window.addEventListener("DOMContentLoaded", async () => {
             if (isNaN(currentUserId) || currentUserId <= 0) {
                 alert("Keine User-ID gefunden! Bitte zuerst einloggen.");
-                window.location.href = "login.html";
+                window.location.href = "index.html";
                 return;
             }
             await loadUser();
@@ -214,7 +214,7 @@
 
         function logout() {
             localStorage.removeItem("currentUserId");
-            window.location.href = "login.html";
+            window.location.href = "index.html";
         }
 
         async function loadProducts() {
