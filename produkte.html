@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Shop</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 0 0 12px 12px;
+        }
+
+        .container {
+            display: flex;
+            height: calc(100vh - 80px);
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .products {
+            flex: 3;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .product {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            transition: transform 0.3s;
+        }
+
+        .product:hover {
+            transform: translateY(-5px);
+        }
+
+        .product img {
+            width: 60%;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .product h4 {
+            margin: 5px 0;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .product p {
+            margin: 2px 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .product button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: black;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .cart {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .cart h3 {
+            margin-bottom: 10px;
+            text-align: center;
+            color: #333;
+        }
+
+        .cart-item {
+            border-bottom: 1px solid #ddd;
+            padding: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .cart button {
+            padding: 10px;
+            border: none;
+            background: black;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+
+        .cart button:hover {
+            background: #333;
+        }
+
+        #checkoutMessage {
+            text-align: center;
+            font-weight: 600;
+            margin-top: 15px;
+            color: green;
+        }
+
+        button.logout {
+            background: black;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button.logout:hover {
+            background: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div>Hallo <span id="userName"></span></div>
+        <div>Guthaben: <span id="userBalance"></span> CHF</div>
+        <button class="logout" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="container">
+        <div class="products" id="productList"></div>
+        <div class="cart">
+            <div>
+                <h3>Mein Warenkorb</h3>
+                <div id="cartList"></div>
+            </div>
+            <div>
+                <button id="checkoutBtn">Bestellung abschliessen</button>
+                <p id="checkoutMessage"></p>
+            </div>
+        </div>
+    </div>
+    <script>
+        const AIRTABLE_API_KEY = "patncJysIyjkjr588.7bbcb8b66c2faceaf3b2c2266bcfb09850d21c261918cf87583bcd9c272b68ec";
+        const BASE_ID = "apprLf4wHGpkhuwlO";
+        const PRODUCT_TABLE_NAME = "Produkte";
+        const ORDER_TABLE_NAME = "Bestellungen";
+        const currentUserId = parseInt(localStorage.getItem("currentUserId"), 10);
+
+        let cart = [];
+        let userRecord;
+
+        window.addEventListener("DOMContentLoaded", async () => {
+            if (isNaN(currentUserId) || currentUserId <= 0) {
+                alert("Keine User-ID gefunden! Bitte zuerst einloggen.");
+                window.location.href = "login.html";
+                return;
+            }
+            await loadUser();
+            await loadProducts();
+            renderCart();
+        });
+
+        async function loadUser() {
+            const userResponse = await fetch(
+                `https://api.airtable.com/v0/${BASE_ID}/User?filterByFormula={ID_User}=${currentUserId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${AIRTABLE_API_KEY}`
+                    }
+                }
+            );
+            const userData = await userResponse.json();
+            userRecord = userData.records[0];
+            document.getElementById("userName").textContent =
+                userRecord.fields.Benutzername || "Benutzer";
+            document.getElementById("userBalance").textContent =
+                userRecord.fields.Guthaben.toFixed(2);
+        }
+
+        function logout() {
+            localStorage.removeItem("currentUserId");
+            window.location.href = "login.html";
+        }
+
+        async function loadProducts() {
+            const url = `https://api.airtable.com/v0/${BASE_ID}/${PRODUCT_TABLE_NAME}`;
+            const response = await fetch(url, {
+                headers: {
+                    Authorization: `Bearer ${AIRTABLE_API_KEY}`
+                }
+            });
+            const data = await response.json();
+            const productList = document.getElementById("productList");
+            productList.innerHTML = "";
+            data.records.forEach((record) => {
+                const fields = record.fields;
+                const div = document.createElement("div");
+                div.className = "product";
+                div.innerHTML = `
+                    <h4>${fields.Name}</h4>
+                    <img src="${fields.Bild?.[0]?.url || ''}" alt="${fields.Name}">
+                    <p>Preis: ${fields.Preis} CHF</p>
+                    <p>Lager: ${fields.Lagerbestand}</p>
+                    <button>+</button>
+                `;
+                div.querySelector("button").addEventListener("click", () =>
+                    addToCart({
+                        productRecordId: record.id,
+                        idProdukt: fields.ID_Produkt, // z.B. 1, 2, 3...
+                        name: fields.Name,
+                        price: fields.Preis,
+                        stock: fields.Lagerbestand,
+                        quantity: 1
+                    })
+                );
+                productList.appendChild(div);
+            });
+        }
+
+        function addToCart(item) {
+            const existing = cart.find(i => i.idProdukt === item.idProdukt);
+            if (existing) {
+                if (existing.quantity < existing.stock) {
+                    existing.quantity++;
+                } else {
+                    alert("Nicht genug Lagerbestand!");
+                }
+            } else if (item.stock > 0) {
+                cart.push(item);
+            } else {
+                alert("Kein Lagerbestand!");
+            }
+            renderCart();
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(i => i.idProdukt !== id);
+            renderCart();
+        }
+
+        function renderCart() {
+            const cartList = document.getElementById("cartList");
+            if (cart.length === 0) {
+                cartList.innerHTML = "<p>Warenkorb ist leer</p>";
+                return;
+            }
+            cartList.innerHTML = "";
+            cart.forEach(item => {
+                const div = document.createElement("div");
+                div.className = "cart-item";
+                div.innerHTML = `
+                    ${item.name} x${item.quantity} - ${item.price * item.quantity} CHF
+                    <button>X</button>
+                `;
+                div.querySelector("button").addEventListener("click", () =>
+                    removeFromCart(item.idProdukt)
+                );
+                cartList.appendChild(div);
+            });
+        }
+
+        document.getElementById("checkoutBtn").addEventListener("click", checkoutCart);
+
+        async function checkoutCart() {
+            if (cart.length === 0) {
+                alert("Warenkorb ist leer.");
+                return;
+            }
+            const total = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
+            if (userRecord.fields.Guthaben < total) {
+                alert("Nicht genug Guthaben!");
+                return;
+            }
+
+            try {
+                const orderPayload = {
+                    fields: {
+                        ID_User: currentUserId,
+                        ID_Produkt: JSON.stringify(
+                            cart.map(item => ({
+                                idProdukt: item.idProdukt,
+                                quantity: item.quantity
+                            }))
+                        )
+                    }
+                };
+
+                const orderResponse = await fetch(
+                    `https://api.airtable.com/v0/${BASE_ID}/${ORDER_TABLE_NAME}`,
+                    {
+                        method: "POST",
+                        headers: {
+                            Authorization: `Bearer ${AIRTABLE_API_KEY}`,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(orderPayload)
+                    }
+                );
+
+                if (!orderResponse.ok) {
+                    const error = await orderResponse.json();
+                    console.error("Airtable-Fehler bei Bestellung:", error);
+                }
+            } catch (err) {
+                console.error("Fetch-Fehler (Bestellung):", err);
+            }
+
+
+            for (let item of cart) {
+                try {
+                    const stockResponse = await fetch(
+                        `https://api.airtable.com/v0/${BASE_ID}/${PRODUCT_TABLE_NAME}/${item.productRecordId}`,
+                        {
+                            method: "PATCH",
+                            headers: {
+                                Authorization: `Bearer ${AIRTABLE_API_KEY}`,
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                fields: {
+                                    Lagerbestand: item.stock - item.quantity
+                                }
+                            })
+                        }
+                    );
+                    if (!stockResponse.ok) {
+                        const error = await stockResponse.json();
+                        console.error("Airtable-Fehler bei Lager:", error);
+                    }
+                } catch (err) {
+                    console.error("Fetch-Fehler (Lagerbestand):", err);
+                }
+            }
+
+            try {
+                const balanceResponse = await fetch(
+                    `https://api.airtable.com/v0/${BASE_ID}/User/${userRecord.id}`,
+                    {
+                        method: "PATCH",
+                        headers: {
+                            Authorization: `Bearer ${AIRTABLE_API_KEY}`,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            fields: {
+                                Guthaben: userRecord.fields.Guthaben - total
+                            }
+                        })
+                    }
+                );
+                if (!balanceResponse.ok) {
+                    const error = await balanceResponse.json();
+                    console.error("Airtable-Fehler bei Guthaben:", error);
+                }
+            } catch (err) {
+                console.error("Fetch-Fehler (Guthaben):", err);
+            }
+
+            cart = [];
+            await loadUser();
+            await loadProducts();
+            renderCart();
+            document.getElementById("checkoutMessage").textContent =
+                "Bestellung abgeschlossen!";
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Bereich</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background: #333;
+            color: white;
+        }
+
+        ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Admin - Alle Bestellungen</h2>
+    <div id="orderTable"></div>
+
+    <script>
+        const AIRTABLE_API_KEY = "patncJysIyjkjr588.7bbcb8b66c2faceaf3b2c2266bcfb09850d21c261918cf87583bcd9c272b68ec";
+        const BASE_ID = "apprLf4wHGpkhuwlO";
+        const ORDER_TABLE_NAME = "Bestellungen";
+        const PRODUCT_TABLE_NAME = "Produkte";
+        const ADMIN_USER_ID = 21; 
+
+        const currentUserId = parseInt(localStorage.getItem("currentUserId"), 10);
+
+        window.addEventListener("DOMContentLoaded", async () => {
+            if (currentUserId !== ADMIN_USER_ID) {
+                alert("Kein Zugriff!");
+                window.location.href = "shop.html";
+                return;
+            }
+            await loadOrders();
+        });
+
+        async function loadOrders() {
+            const [ordersData, productsData] = await Promise.all([
+                fetch(`https://api.airtable.com/v0/${BASE_ID}/${ORDER_TABLE_NAME}`, {
+                    headers: { Authorization: `Bearer ${AIRTABLE_API_KEY}` }
+                }).then(res => res.json()),
+                fetch(`https://api.airtable.com/v0/${BASE_ID}/${PRODUCT_TABLE_NAME}`, {
+                    headers: { Authorization: `Bearer ${AIRTABLE_API_KEY}` }
+                }).then(res => res.json())
+            ]);
+
+            const products = {};
+            productsData.records.forEach(product => {
+                products[product.fields.ID_Produkt] = product.fields;
+            });
+
+            renderTable(ordersData.records, products);
+        }
+
+        function renderTable(orders, products) {
+            if (orders.length === 0) {
+                document.getElementById("orderTable").innerHTML = "<p>Keine Bestellungen gefunden.</p>";
+                return;
+            }
+
+            let html = `<table><tr><th>Bestell-ID</th><th>User-ID</th><th>Produkte</th></tr>`;
+            orders.forEach(order => {
+                const bestellteProdukte = JSON.parse(order.fields.ID_Produkt || "[]");
+                html += `
+                    <tr>
+                        <td>${order.id}</td>
+                        <td>${order.fields.ID_User}</td>
+                        <td>
+                            <ul>
+                                ${bestellteProdukte.map(p => {
+                                    const prod = products[p.idProdukt];
+                                    if (!prod) return `<li>Produkt ID ${p.idProdukt} (nicht gefunden)</li>`;
+                                    return `<li>${prod.Name} - Menge: ${p.quantity} - Einzelpreis: ${prod.Preis} CHF - Gesamt: ${p.quantity * prod.Preis} CHF</li>`;
+                                }).join('')}
+                            </ul>
+                        </td>
+                    </tr>`;
+            });
+            html += "</table>";
+            document.getElementById("orderTable").innerHTML = html;
+        }
+    </script>
+</body>
+
+</html>

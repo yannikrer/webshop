@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Login</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-box {
+            width: 400px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            box-sizing: border-box;
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .login-box p:first-child {
+            margin: 0 0 30px;
+            padding: 0;
+            color: #333;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .login-box .user-box {
+            position: relative;
+        }
+
+        .login-box .user-box input {
+            width: 100%;
+            padding: 10px 0;
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 30px;
+            border: none;
+            border-bottom: 1px solid #333;
+            outline: none;
+            background: transparent;
+        }
+
+        .login-box .user-box label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 10px 0;
+            font-size: 16px;
+            color: #333;
+            pointer-events: none;
+            transition: .5s;
+        }
+
+        .login-box .user-box input:focus~label,
+        .login-box .user-box input:valid~label {
+            top: -20px;
+            left: 0;
+            color: #999;
+            font-size: 12px;
+        }
+
+        .login-box button {
+            position: relative;
+            display: inline-block;
+            padding: 10px 20px;
+            font-weight: bold;
+            color: #333;
+            font-size: 16px;
+            background: #fff;
+            border: 1px solid #333;
+            text-decoration: none;
+            text-transform: uppercase;
+            overflow: hidden;
+            transition: .5s;
+            margin-top: 20px;
+            letter-spacing: 3px;
+            width: 100%;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .login-box button:hover {
+            background: #333;
+            color: #fff;
+        }
+
+        .login-box p:last-child {
+            color: #555;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .login-box a.a2 {
+            color: #333;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .login-box a.a2:hover {
+            color: #999;
+        }
+
+        #errorMessage {
+            text-align: center;
+            color: red;
+            margin-top: 15px;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+
+<body>
+    <div class="login-box">
+        <p>Login</p>
+        <form id="loginForm">
+            <div class="user-box">
+                <input required="" name="username" id="username" type="text">
+                <label>Benutzername</label>
+            </div>
+            <div class="user-box">
+                <input required="" name="password" id="password" type="password">
+                <label>Passwort</label>
+            </div>
+
+            <!-- ✅ Admin Haken -->
+            <div style="margin-bottom: 20px;">
+                <input type="checkbox" id="adminCheck">
+                <label for="adminCheck">Admin-Login</label>
+            </div>
+
+            <button type="submit">Anmelden</button>
+        </form>
+        <p id="errorMessage"></p>
+    </div>
+
+    <script>
+        const AIRTABLE_API_KEY = "patncJysIyjkjr588.7bbcb8b66c2faceaf3b2c2266bcfb09850d21c261918cf87583bcd9c272b68ec";
+        const BASE_ID = "apprLf4wHGpkhuwlO";
+        const USER_TABLE_NAME = "User";
+
+        document.getElementById("loginForm").addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const username = document.getElementById("username").value.trim();
+            const password = document.getElementById("password").value.trim();
+            const isAdminChecked = document.getElementById("adminCheck").checked;
+
+            try {
+                const url = `https://api.airtable.com/v0/${BASE_ID}/${USER_TABLE_NAME}?filterByFormula={Benutzername}='${username}'`;
+                const response = await fetch(url, {
+                    headers: { Authorization: `Bearer ${AIRTABLE_API_KEY}` }
+                });
+                const data = await response.json();
+                if (!data.records || data.records.length === 0) {
+                    document.getElementById("errorMessage").textContent = "Benutzer nicht gefunden!";
+                    return;
+                }
+                const userRecord = data.records[0];
+                const userFields = userRecord.fields;
+                if (userFields.Passwort === password) {
+                    localStorage.setItem("currentUserId", userFields.ID_User);
+                    if (isAdminChecked) {
+                        window.location.href = "admin.html";
+                    } else {
+                        window.location.href = "produkte.html";
+                    }
+                } else {
+                    document.getElementById("errorMessage").textContent = "Falsches Passwort!";
+                }
+            } catch (error) {
+                console.error("Fehler beim Abrufen aus Airtable:", error);
+                document.getElementById("errorMessage").textContent = "Fehler. Bitte später erneut versuchen.";
+            }
+        });
+    </script>
+</body>
+
+</html>
